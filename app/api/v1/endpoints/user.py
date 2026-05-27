@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from fastapi_pagination import Page, paginate
 from pydantic import UUID4
 
 from app.api.deps.user import UserServiceDep
@@ -24,9 +25,9 @@ def create_user(
 @router.get("/")
 def list_users(
     service: UserServiceDep,
-) -> list[UserResponseModel]:
+) -> Page[UserResponseModel]:
     users = service.list_users()
-    return [to_user_response(user) for user in users]
+    return paginate([to_user_response(user) for user in users])
 
 
 @router.get("/{user_id}")

@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
+from fastapi_pagination import add_pagination
 from starlette.middleware.cors import CORSMiddleware
 
 from app.api.v1.api import api_router
@@ -27,6 +28,9 @@ app.add_exception_handler(AppError, app_exception_handler)
 
 # Include API Router
 app.include_router(api_router, prefix=settings.API_V1_STR)
+
+# Pagination setup
+add_pagination(app)
 
 
 @app.get("/", tags=["root"], include_in_schema=False)
