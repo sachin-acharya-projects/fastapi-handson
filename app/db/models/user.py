@@ -3,10 +3,10 @@
 from sqlalchemy import Boolean, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.db.models.base import AuditMixin, Base
+from app.db.models.base import Base, ModelMixin
 
 
-class User(AuditMixin, Base):
+class User(ModelMixin, Base):
     """Application user — the primary identity and resource model."""
 
     __tablename__ = "users"

@@ -19,7 +19,7 @@ from sqlalchemy.orm import sessionmaker
 
 from app.core.config import settings
 from app.db.models import Base
-from app.db.session import get_db
+from app.db.session import SoftDeleteSession, get_db
 from app.main import app
 
 TEST_DATABASE_URL = os.environ.get("TEST_DATABASE_URL", "sqlite:///./test.db")
@@ -29,6 +29,7 @@ engine = create_engine(
     connect_args={"check_same_thread": False},
 )
 TestingSessionLocal = sessionmaker(
+    class_=SoftDeleteSession,
     autocommit=False,
     autoflush=False,
     bind=engine,

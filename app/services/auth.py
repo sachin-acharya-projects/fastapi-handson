@@ -1,6 +1,7 @@
 """Authentication service — register, login, token refresh.
 
 Uses bcrypt for password hashing and python-jose for JWT creation/validation.
+Soft-deleted users cannot log in or refresh tokens.
 """
 
 import hashlib
@@ -99,7 +100,11 @@ class AuthService:
         When *background_tasks* is provided an email verification link
         is sent asynchronously.
         """
-        existing = self.db.query(User).filter(User.email == payload.email).first()
+        existing = (
+            self.db.query(User)
+            .filter(User.email == payload.email)
+            .first()
+        )
         if existing:
             raise EmailAlreadyExistsError()
 
@@ -120,7 +125,11 @@ class AuthService:
 
     def login(self, payload: LoginRequest) -> TokenResponse:
         """Verify credentials and return token pair."""
-        user = self.db.query(User).filter(User.email == payload.email).first()
+        user = (
+            self.db.query(User)
+            .filter(User.email == payload.email)
+            .first()
+        )
         if not user or not verify_password(payload.password, user.password_hash):
             raise InvalidCredentialsError()
 
@@ -145,7 +154,11 @@ class AuthService:
         if user_id_raw is None:
             raise InvalidTokenError("Invalid refresh token payload")
 
-        user = self.db.query(User).filter(User.id == uuid.UUID(user_id_raw)).first()
+        user = (
+            self.db.query(User)
+            .filter(User.id == uuid.UUID(user_id_raw))
+            .first()
+        )
         if not user:
             raise UserNotFoundError()
 
